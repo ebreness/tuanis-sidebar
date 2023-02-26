@@ -1,6 +1,6 @@
 name: tuanis_sidebar
-description: Sidebar navigation
-version: 0.0.1
+description: tuanis_sidebar is a flexible and customizable Flutter package for creating sidebars that integrate seamlessly into your app's user interface. Offers a range of customization options, making it easy to design a sidebar that fits your app's branding and style.
+version: 0.0.2
 homepage: https://github.com/ebreness/tuanis_sidebar
 
 environment:

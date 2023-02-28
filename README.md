@@ -67,4 +67,4 @@ class Example extends StatelessWidget {
 }
 ```
 
-[screenshot](./doc/assets/screenshot.png)
+![screenshot](/doc/assets/screenshot.png?raw=true "Example Screenshot")

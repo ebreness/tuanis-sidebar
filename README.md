@@ -1,70 +1,75 @@
-# tuanis_sidebar
-Sidebar Flutter package
+<h1 align="center">
+  TuanisSidebar
+</h1>
 
-## Example
+<h2 align="center">Flutter package to create sidebars specially for web, but can be integrated as a drawer in a mobile app. Allows nested items.</h2>
+
+## Basic Example
 ```dart
-import 'package:flutter/material.dart';
-import 'package:tuanis_sidebar/tuanis_sidebar.dart';
-
-void main() {
-  runApp(
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Example(),
-    ),
-  );
-}
-
-class Example extends StatelessWidget {
-  const Example({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TuanisSidebar(
-            selectedItemId: 'settings',
+return Scaffold(
+  body: Row(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      TuanisSidebar(
+        selectedColor: Colors.white,
+        selectedTileColor: Colors.blue,
+        selectedItemId: 'settings',
+        sections: const [
+          TuanisSidebarSection(
+            title: Text(
+              'MAIN',
+              style: TextStyle(letterSpacing: 1.2),
+            ),
             items: [
               TuanisSidebarItem(
                 id: 'dashboard',
-                label: 'Dashboard',
-                leadingIcon: Icons.dashboard,
-                onClick: () {
-                  print('dashboard');
-                },
+                tile: ListTile(
+                  leading: Icon(Icons.dashboard),
+                  title: Text('Dashboard'),
+                ),
+                items: [
+                  TuanisSidebarItem(
+                    id: 'dashboard_1',
+                    tile: ListTile(
+                      leading: Icon(Icons.abc),
+                      title: Text('Child of Dashboard'),
+                    ),
+                  )
+                ],
               ),
               TuanisSidebarItem(
                 id: 'settings',
-                label: 'Settings',
-                leadingIcon: Icons.settings,
-                onClick: () {
-                  print('settings');
-                },
-              ),
-              TuanisSidebarItem(
-                id: 'inventory',
-                label: 'Inventory',
-                leadingIcon: Icons.inventory,
-                onClick: () {
-                  print('inventory');
-                },
-              ),
+                tile: ListTile(
+                  title: Text('Settings'),
+                  leading: Icon(Icons.settings),
+                ),
+              )
             ],
           ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(50),
-              color: Colors.orange,
-              child: const Text('App body here'),
-            ),
-          )
+          TuanisSidebarSection(
+            borderColor: Color(0xffcbd5e1),
+            items: [
+              TuanisSidebarItem(
+                id: 'logout',
+                tile: ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text('Logout'),
+                ),
+              )
+            ],
+          ),
         ],
       ),
-    );
-  }
-}
+      Expanded(
+        child: Container(
+          padding: const EdgeInsets.all(50),
+          color: Colors.white,
+          child: const Text('App body here'),
+        ),
+      )
+    ],
+  ),
+);
 ```
 
 ![screenshot](/doc/assets/screenshot.png?raw=true "Example Screenshot")

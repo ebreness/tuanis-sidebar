@@ -18,7 +18,6 @@ class TuanisSidebarItem extends StatefulWidget {
     super.key,
     required this.id,
     required this.tile,
-    // required this.label,
     this.expandIcon = const Icon(
       Icons.arrow_forward_ios,
       size: 16,
@@ -30,7 +29,8 @@ class TuanisSidebarItem extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _TuanisSidebarItem();
 
-  TuanisSidebarItem copyWith({required ListTile extTile, required bool extIsSelected}) {
+  TuanisSidebarItem copyWith(
+      {required ListTile extTile, required bool extIsSelected}) {
     return TuanisSidebarItem(
       id: id,
       tile: extTile,
@@ -49,10 +49,10 @@ class _TuanisSidebarItem extends State<TuanisSidebarItem> {
 
   @override
   Widget build(BuildContext context) {
-    /// copyWith is an extension (see core/ext.dart)
     return widget.tile.setDefaults(
       defaultSelected: widget.isSelected,
-      defaultTrailing: widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
+      defaultTrailing:
+          widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
     );
   }
 }

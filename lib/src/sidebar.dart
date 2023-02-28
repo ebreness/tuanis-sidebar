@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tuanis_sidebar/src/core/ext.dart';
 import 'package:tuanis_sidebar/src/item.dart';
+import 'package:tuanis_sidebar/src/section.dart';
 
 /// The main widget for building the sidebar
 ///
@@ -14,7 +15,8 @@ import 'package:tuanis_sidebar/src/item.dart';
 /// [splashColor] The color of splash for the tile's [Material].
 /// [tileColor] Defines the background color of ListTile when [selected] is false.
 class TuanisSidebar extends StatefulWidget {
-  final List<TuanisSidebarItem> items;
+  final List<TuanisSidebarSection> sections;
+  final MainAxisAlignment sectionsAligment;
   final String? selectedItemId;
 
   final Color? selectedColor;
@@ -28,7 +30,8 @@ class TuanisSidebar extends StatefulWidget {
 
   TuanisSidebar({
     super.key,
-    required this.items,
+    required this.sections,
+    this.sectionsAligment = MainAxisAlignment.spaceBetween,
     this.selectedItemId,
     this.selectedColor,
     this.selectedTileColor,
@@ -39,15 +42,15 @@ class TuanisSidebar extends StatefulWidget {
     this.splashColor,
     this.tileColor,
   }) {
-    assert(_allItemIdsAreUnique());
+    // assert(_allItemIdsAreUnique());
   }
 
   @override
   State<StatefulWidget> createState() => _TuanisSidebar();
 
-  bool _allItemIdsAreUnique() {
-    return items.map((item) => item.id).toSet().length == items.length;
-  }
+  // bool _allItemIdsAreUnique() {
+  //   return items.map((item) => item.id).toSet().length == items.length;
+  // }
 }
 
 class _TuanisSidebar extends State<TuanisSidebar> {
@@ -72,34 +75,49 @@ class _TuanisSidebar extends State<TuanisSidebar> {
     return SingleChildScrollView(
       child: SizedBox(
         width: _width,
-        child: _getItems(widget.items, level: 1),
+        child: Column(
+          mainAxisAlignment: widget.sectionsAligment,
+          children: _getSections(),
+        ),
       ),
     );
+  }
+
+  List<TuanisSidebarSection> _getSections() {
+    return widget.sections
+        .map(
+          (e) => TuanisSidebarSection(
+            backgroundColor: e.backgroundColor,
+            borderColor: e.borderColor,
+            title: e.title,
+            items: _getItems(e.items, level: 1) as List<TuanisSidebarItem>,
+          ),
+        )
+        .toList();
   }
 
   /// Returns a Column where each child can have another Column with sub-items
   /// This method is called recursively
   /// [items] The children of the Column currently being rendered
-  Widget? _getItems(List<TuanisSidebarItem> items, {required int level}) {
+  List<TuanisSidebarItem>? _getItems(List<TuanisSidebarItem> items,
+      {required int level}) {
     if (items.isEmpty) {
       return null;
     }
 
-    List<Widget> children = [];
+    List<TuanisSidebarItem> children = [];
     for (int i = 0; i < items.length; i++) {
       children.add(_addExtraAttributesToItem(item: items[i], level: level));
       if (_expandedItemIds.contains(items[i].id)) {
         // render sub-items only if the current item is expanded
         final subItems = _getItems(items[i].items, level: level + 1);
         if (subItems != null) {
-          children.add(subItems);
+          children.addAll(subItems);
         }
       }
     }
 
-    return Column(
-      children: children,
-    );
+    return children;
   }
 
   TuanisSidebarItem _addExtraAttributesToItem(

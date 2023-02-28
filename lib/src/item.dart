@@ -3,42 +3,42 @@ import 'package:tuanis_sidebar/src/core/ext.dart';
 
 /// Represents an item in the sidebar
 /// [id] The item identifier. Used to know if this is the active item
-/// [label] The title of the list tile
-/// [onClick] The function to call when this item is pressed
-/// [leadingIcon] An icon to show at the start of the list tile
-/// [selectedFontColor] The font color for the selected item
+/// [tile] A ListTile component. The properties of this component will override any global property
+/// [expandIcon] The icon to show when the item has subitems. The default value is `arrow_forward_ios`
+/// [isSelected] If true, then the item is shown as selected
+/// [items] The sub-items
 class TuanisSidebarItem extends StatefulWidget {
   final String id;
-  final String label;
-  final void Function() onClick;
-  final IconData? leadingIcon;
+  final ListTile tile;
+  final Icon? expandIcon;
   final bool isSelected;
-  final Color? fontColor;
-  final Color? hoverColor;
-  final Color? selectedFontColor;
-  final Color? backgroundColor;
-  final Color? selectedBackgroundColor;
-  final Color? leadingIconColor;
-  final Color? selectedLeadingIconColor;
+  final List<TuanisSidebarItem> items;
 
   const TuanisSidebarItem({
     super.key,
     required this.id,
-    required this.label,
-    required this.onClick,
-    this.fontColor,
-    this.hoverColor,
-    this.backgroundColor,
-    this.selectedBackgroundColor,
-    this.selectedFontColor,
-    this.leadingIconColor,
-    this.selectedLeadingIconColor,
-    this.leadingIcon,
+    required this.tile,
+    // required this.label,
+    this.expandIcon = const Icon(
+      Icons.arrow_forward_ios,
+      size: 16,
+    ),
     this.isSelected = false,
+    this.items = const [],
   });
 
   @override
   State<StatefulWidget> createState() => _TuanisSidebarItem();
+
+  TuanisSidebarItem copyWith({required ListTile extTile, required bool extIsSelected}) {
+    return TuanisSidebarItem(
+      id: id,
+      tile: extTile,
+      expandIcon: expandIcon,
+      isSelected: extIsSelected,
+      items: items,
+    );
+  }
 }
 
 class _TuanisSidebarItem extends State<TuanisSidebarItem> {
@@ -49,26 +49,10 @@ class _TuanisSidebarItem extends State<TuanisSidebarItem> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: widget.leadingIcon != null ? Icon(widget.leadingIcon) : null,
-      title: Text(
-        widget.label,
-        style: TextStyle(
-          color: widget.isSelected
-              ? (widget.selectedFontColor ?? Colors.black)
-              : (widget.fontColor ?? Colors.black),
-        ),
-      ),
-      tileColor: widget.isSelected
-          ? (widget.selectedBackgroundColor ?? Colors.blue)
-          : (widget.backgroundColor ?? const Color(0xfff8fafc)),
-      iconColor: widget.isSelected
-          ? (widget.selectedLeadingIconColor ?? Colors.black)
-          : (widget.leadingIconColor ?? Colors.black),
-      hoverColor: widget.isSelected
-          ? (widget.selectedBackgroundColor ?? Colors.blue).darken()
-          : (widget.hoverColor ?? (widget.backgroundColor ?? const Color(0xfff8fafc)).darken()),
-      onTap: widget.onClick,
+    /// copyWith is an extension (see core/ext.dart)
+    return widget.tile.setDefaults(
+      defaultSelected: widget.isSelected,
+      defaultTrailing: widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
     );
   }
 }

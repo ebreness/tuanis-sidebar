@@ -77,7 +77,13 @@ build/
 linux/
 macos/
 windows/
+ios/
+android/
+web/
+
 test/
 # example app
 example/*
+example/lib/*
+!example/lib/
 !example/lib/main.dart

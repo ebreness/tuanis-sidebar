@@ -1,8 +1,3 @@
-# tuanis_sidebar
-Sidebar Flutter package
-
-## Example
-```dart
 import 'package:flutter/material.dart';
 import 'package:tuanis_sidebar/tuanis_sidebar.dart';
 
@@ -25,38 +20,39 @@ class Example extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TuanisSidebar(
+            selectedColor: Colors.white,
+            selectedTileColor: Colors.blue,
             selectedItemId: 'settings',
-            items: [
+            items: const [
               TuanisSidebarItem(
                 id: 'dashboard',
-                label: 'Dashboard',
-                leadingIcon: Icons.dashboard,
-                onClick: () {
-                  print('dashboard');
-                },
+                tile: ListTile(
+                  leading: Icon(Icons.dashboard),
+                  title: Text('Dashboard'),
+                ),
+                items: [
+                  TuanisSidebarItem(
+                    id: 'dashboard_1',
+                    tile: ListTile(
+                      leading: Icon(Icons.abc),
+                      title: Text('Child of Dashboard'),
+                    ),
+                  )
+                ],
               ),
               TuanisSidebarItem(
                 id: 'settings',
-                label: 'Settings',
-                leadingIcon: Icons.settings,
-                onClick: () {
-                  print('settings');
-                },
-              ),
-              TuanisSidebarItem(
-                id: 'inventory',
-                label: 'Inventory',
-                leadingIcon: Icons.inventory,
-                onClick: () {
-                  print('inventory');
-                },
-              ),
+                tile: ListTile(
+                  title: Text('Settings'),
+                  leading: Icon(Icons.settings),
+                ),
+              )
             ],
           ),
           Expanded(
             child: Container(
               padding: const EdgeInsets.all(50),
-              color: Colors.orange,
+              color: Colors.white,
               child: const Text('App body here'),
             ),
           )
@@ -65,6 +61,3 @@ class Example extends StatelessWidget {
     );
   }
 }
-```
-
-[screenshot](/doc/assets/screenshot.png)

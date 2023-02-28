@@ -1,38 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:tuanis_sidebar/src/core/ext.dart';
 import 'package:tuanis_sidebar/src/item.dart';
 
 /// The main widget for building the sidebar
 ///
 /// [selectedItemId] The initial selected item id
-/// [fontColor] The font color of the item
-/// [hoverColor] The background color when the item is hovered. Except if the item is selected
-/// [selectedFontColor] The font color of the item when it is selected
-/// [selectedBackgroundColor] The background color of the item when it is selected
-/// [itemBackgroundColor] The background color of the item when it is NOT selected
-/// [leadingIconColor] The color of the leading icon when the item is NOT selected
-/// [selectedLeadingIconColor] The color of the leading icon when the item is selected
+/// [selectedColor] Defines the color used for icons and text when the list tile is selected.
+/// [selectedTileColor] Defines the background color of ListTile when [selected] is true.
+/// [iconColor] Defines the default color for [leading] and [trailing] icons.
+/// [textColor] Defines the default color for the [title] and [subtitle].
+/// [focusColor] The color for the tile's [Material] when it has the input focus.
+/// [hoverColor] The color for the tile's [Material] when a pointer is hovering over it.
+/// [splashColor] The color of splash for the tile's [Material].
+/// [tileColor] Defines the background color of ListTile when [selected] is false.
 class TuanisSidebar extends StatefulWidget {
   final List<TuanisSidebarItem> items;
   final String? selectedItemId;
-  final Color? fontColor;
+
+  final Color? selectedColor;
+  final Color? selectedTileColor;
+  final Color? iconColor;
+  final Color? textColor;
+  final Color? focusColor;
   final Color? hoverColor;
-  final Color? selectedFontColor;
-  final Color? selectedBackgroundColor;
-  final Color? itemBackgroundColor;
-  final Color? leadingIconColor;
-  final Color? selectedLeadingIconColor;
+  final Color? splashColor;
+  final Color? tileColor;
 
   TuanisSidebar({
     super.key,
     required this.items,
     this.selectedItemId,
-    this.fontColor,
+    this.selectedColor,
+    this.selectedTileColor,
+    this.iconColor,
+    this.textColor,
+    this.focusColor,
     this.hoverColor,
-    this.selectedFontColor,
-    this.selectedBackgroundColor,
-    this.itemBackgroundColor,
-    this.leadingIconColor,
-    this.selectedLeadingIconColor,
+    this.splashColor,
+    this.tileColor,
   }) {
     assert(_allItemIdsAreUnique());
   }
@@ -52,11 +57,14 @@ class _TuanisSidebar extends State<TuanisSidebar> {
   /// current selected item
   String? _currentSelectedItemId;
 
+  List<String> _expandedItemIds = [];
+
   @override
   void initState() {
     super.initState();
 
     _currentSelectedItemId = widget.selectedItemId;
+    _expandedItemIds = [];
   }
 
   @override
@@ -64,40 +72,71 @@ class _TuanisSidebar extends State<TuanisSidebar> {
     return SingleChildScrollView(
       child: SizedBox(
         width: _width,
-        child: Column(
-          children: _getItems(),
-        ),
+        child: _getItems(widget.items, level: 1),
       ),
     );
   }
 
-  List<TuanisSidebarItem> _getItems() {
-    return widget.items
-        .map(
-          (item) => TuanisSidebarItem(
-            id: item.id,
-            label: item.label,
-            onClick: () {
-              setState(() {
-                _currentSelectedItemId = item.id;
-              });
+  /// Returns a Column where each child can have another Column with sub-items
+  /// This method is called recursively
+  /// [items] The children of the Column currently being rendered
+  Widget? _getItems(List<TuanisSidebarItem> items, {required int level}) {
+    if (items.isEmpty) {
+      return null;
+    }
 
-              /// call user's event
-              item.onClick();
-            },
-            leadingIcon: item.leadingIcon,
-            isSelected: _currentSelectedItemId == item.id,
-            fontColor: widget.fontColor ?? Theme.of(context).colorScheme.onSurface,
-            hoverColor: widget.hoverColor,
-            selectedBackgroundColor:
-                widget.selectedBackgroundColor ?? Theme.of(context).colorScheme.primary,
-            backgroundColor: widget.itemBackgroundColor ?? Theme.of(context).colorScheme.surface,
-            selectedFontColor: widget.selectedFontColor ?? Theme.of(context).colorScheme.onPrimary,
-            leadingIconColor: widget.leadingIconColor ?? Theme.of(context).colorScheme.primary,
-            selectedLeadingIconColor:
-                widget.selectedLeadingIconColor ?? Theme.of(context).colorScheme.onPrimary,
-          ),
-        )
-        .toList();
+    List<Widget> children = [];
+    for (int i = 0; i < items.length; i++) {
+      children.add(_addExtraAttributesToItem(item: items[i], level: level));
+      if (_expandedItemIds.contains(items[i].id)) {
+        // render sub-items only if the current item is expanded
+        final subItems = _getItems(items[i].items, level: level + 1);
+        if (subItems != null) {
+          children.add(subItems);
+        }
+      }
+    }
+
+    return Column(
+      children: children,
+    );
+  }
+
+  TuanisSidebarItem _addExtraAttributesToItem(
+      {required TuanisSidebarItem item, required int level}) {
+    return item.copyWith(
+      extIsSelected: _currentSelectedItemId == item.id,
+      extTile: item.tile.setDefaults(
+        defaultContentPadding: EdgeInsets.only(left: level * 16, right: 16),
+        defaultSelectedColor: widget.selectedColor,
+        defaultSelectedTileColor: widget.selectedTileColor,
+        defaultIconColor: widget.iconColor,
+        defaultTextColor: widget.textColor,
+        defaultFocusColor: widget.focusColor,
+        defaultHoverColor: widget.hoverColor,
+        defaultSplashColor: widget.splashColor,
+        defaultTileColor: widget.tileColor,
+        defaultOnTap: () {
+          setState(() {
+            // show the item as selected only if it is a leaf
+            if (item.items.isEmpty) {
+              _currentSelectedItemId = item.id;
+            } else {
+              // expand sub-menu
+              if (_expandedItemIds.contains(item.id)) {
+                _expandedItemIds.remove(item.id);
+              } else {
+                _expandedItemIds.add(item.id);
+              }
+            }
+
+            // call user's event if not null and the item doesn't have nested items
+            if (item.tile.onTap != null && item.items.isEmpty) {
+              item.tile.onTap!();
+            }
+          });
+        },
+      ),
+    );
   }
 }

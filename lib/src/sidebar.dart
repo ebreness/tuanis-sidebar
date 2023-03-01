@@ -15,17 +15,37 @@ import 'package:tuanis_sidebar/src/section.dart';
 /// [splashColor] The color of splash for the tile's [Material].
 /// [tileColor] Defines the background color of ListTile when [selected] is false.
 class TuanisSidebar extends StatefulWidget {
+  /// Organize items into sections
   final List<TuanisSidebarSection> sections;
+
+  ///  Control how the sections are spread within the Column
   final MainAxisAlignment sectionsAligment;
+
+  /// The initial selected item id
   final String? selectedItemId;
 
+  /// Defines the color used for icons and text when the list tile is selected. (Applies to all items)
   final Color? selectedColor;
+
+  /// Defines the background color of ListTile when [selected] is true. (Applies to all items)
   final Color? selectedTileColor;
+
+  /// Defines the default color for [leading] and [trailing] icons. (Applies to all items)
   final Color? iconColor;
+
+  /// Defines the default color for the [title] and [subtitle]. (Applies to all items)
   final Color? textColor;
+
+  /// The color for the tile's [Material] when it has the input focus. (Applies to all items)
   final Color? focusColor;
+
+  /// The color for the tile's [Material] when a pointer is hovering over it. (Applies to all items)
   final Color? hoverColor;
+
+  /// The color of splash for the tile's [Material]. (Applies to all items)
   final Color? splashColor;
+
+  /// Defines the background color of ListTile when [selected] is false.  (Applies to all items)
   final Color? tileColor;
 
   TuanisSidebar({
@@ -42,24 +62,23 @@ class TuanisSidebar extends StatefulWidget {
     this.splashColor,
     this.tileColor,
   }) {
-    // assert(_allItemIdsAreUnique());
+    assert(_allItemIdsAreUnique());
   }
 
   @override
   State<StatefulWidget> createState() => _TuanisSidebar();
 
-  // bool _allItemIdsAreUnique() {
-  //   return items.map((item) => item.id).toSet().length == items.length;
-  // }
+  bool _allItemIdsAreUnique() {
+    final allItems = sections.map((s) {
+      return [...s.items][0]; // sorry for this
+    }).toList();
+    return allItems.map((item) => item.id).toSet().length == allItems.length;
+  }
 }
 
 class _TuanisSidebar extends State<TuanisSidebar> {
-  /// the width of the sidebar
   final double _width = 250;
-
-  /// current selected item
   String? _currentSelectedItemId;
-
   List<String> _expandedItemIds = [];
 
   @override
@@ -73,8 +92,11 @@ class _TuanisSidebar extends State<TuanisSidebar> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: SizedBox(
+      child: Container(
         width: _width,
+        constraints: BoxConstraints(
+          minHeight: MediaQuery.of(context).size.height,
+        ),
         child: Column(
           mainAxisAlignment: widget.sectionsAligment,
           children: _getSections(),
@@ -96,11 +118,7 @@ class _TuanisSidebar extends State<TuanisSidebar> {
         .toList();
   }
 
-  /// Returns a Column where each child can have another Column with sub-items
-  /// This method is called recursively
-  /// [items] The children of the Column currently being rendered
-  List<TuanisSidebarItem>? _getItems(List<TuanisSidebarItem> items,
-      {required int level}) {
+  List<TuanisSidebarItem>? _getItems(List<TuanisSidebarItem> items, {required int level}) {
     if (items.isEmpty) {
       return null;
     }

@@ -11,3 +11,5 @@
 - each item now receives a ListTile component to facilite color customizations
 - global (apply to all items) color configuration for states like hover, focus, selected.
 
+## 0.2.0
+- items can be divided in sections

@@ -71,7 +71,12 @@ class _TuanisSidebarItem extends State<TuanisSidebarItem> {
     Widget itemBody = Material(
       child: widget.tile.setDefaults(
         defaultSelected: widget.isSelected,
-        defaultTrailing: widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
+        defaultTrailing: widget.items.isNotEmpty
+            ? const Icon(
+                Icons.arrow_forward_ios,
+                size: 14,
+              )
+            : null,
       ),
     );
 

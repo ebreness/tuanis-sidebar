@@ -7,7 +7,7 @@
 
 |Desktop|Mobile|
 |---|---|
-|![screenshot](/doc/assets/desktop.gif?raw=true "Desktop")|![screenshot](/doc/assets/mobile.gif?raw=true "Mobile")|
+|![screenshot](https://github.com/ebreness/tuanis_sidebar/blob/main/doc/desktop.gif?raw=true "Desktop")|![screenshot](https://github.com/ebreness/tuanis_sidebar/blob/main/doc/mobile.gif?raw=true "Mobile")|
 
 ## Basic Example
 ```dart

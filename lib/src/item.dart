@@ -68,9 +68,11 @@ class _TuanisSidebarItem extends State<TuanisSidebarItem> {
   Widget build(BuildContext context) {
     final isSidebarCollapse = SidebarState.of(context)?.isCollapse ?? false;
 
-    Widget itemBody = widget.tile.setDefaults(
-      defaultSelected: widget.isSelected,
-      defaultTrailing: widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
+    Widget itemBody = Material(
+      child: widget.tile.setDefaults(
+        defaultSelected: widget.isSelected,
+        defaultTrailing: widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
+      ),
     );
 
     if (isSidebarCollapse) {

@@ -20,9 +20,7 @@ class Example extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TuanisSidebar(
-            sectionsAligment: MainAxisAlignment.start,
-            selectedColor: Colors.white,
-            selectedTileColor: Colors.blue,
+            sectionsAligment: MainAxisAlignment.spaceBetween,
             selectedItemId: 'settings',
             sections: [
               const TuanisSidebarSection(

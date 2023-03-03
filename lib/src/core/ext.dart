@@ -4,8 +4,7 @@ extension ColorExtensions on Color {
   Color lighten([double amount = 0.15]) {
     assert(amount >= 0 && amount <= 1);
     final hsl = HSLColor.fromColor(this);
-    final hslLight =
-        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+    final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
     return hslLight.toColor();
   }
 
@@ -21,7 +20,7 @@ extension ListTileExtensions on ListTile {
   ListTile setDefaults({
     Icon? defaultTrailing,
     EdgeInsetsGeometry? defaultContentPadding,
-    GestureTapCallback? defaultOnTap,
+    GestureTapCallback? overrideOnTap,
     bool defaultSelected = false,
     Color? defaultSelectedColor,
     Color? defaultSelectedTileColor,
@@ -48,7 +47,7 @@ extension ListTileExtensions on ListTile {
       textColor: textColor ?? defaultTextColor,
       contentPadding: contentPadding ?? defaultContentPadding,
       enabled: enabled,
-      onTap: onTap ?? defaultOnTap,
+      onTap: overrideOnTap ?? onTap,
       onLongPress: onLongPress,
       onFocusChange: onFocusChange,
       mouseCursor: mouseCursor,
@@ -64,6 +63,24 @@ extension ListTileExtensions on ListTile {
       horizontalTitleGap: horizontalTitleGap,
       minLeadingWidth: minLeadingWidth,
       minVerticalPadding: minVerticalPadding,
+    );
+  }
+}
+
+extension IconExtensions on Icon {
+  Icon setDefaults({Color? defaultColor, double? defaultSize}) {
+    return Icon(
+      icon,
+      key: key,
+      color: color ?? defaultColor,
+      size: size ?? defaultSize,
+      fill: fill,
+      grade: grade,
+      weight: weight,
+      opticalSize: opticalSize,
+      shadows: shadows,
+      semanticLabel: semanticLabel,
+      textDirection: textDirection,
     );
   }
 }

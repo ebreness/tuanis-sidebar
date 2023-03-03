@@ -20,12 +20,12 @@ class Example extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TuanisSidebar(
-            sectionsAligment: MainAxisAlignment.spaceBetween,
+            sectionsAligment: MainAxisAlignment.start,
             selectedColor: Colors.white,
             selectedTileColor: Colors.blue,
             selectedItemId: 'settings',
-            sections: const [
-              TuanisSidebarSection(
+            sections: [
+              const TuanisSidebarSection(
                 title: Text(
                   'MAIN',
                   style: TextStyle(letterSpacing: 1.2),
@@ -57,13 +57,23 @@ class Example extends StatelessWidget {
                 ],
               ),
               TuanisSidebarSection(
-                borderColor: Color(0xffcbd5e1),
+                borderColor: const Color(0xffcbd5e1),
                 items: [
                   TuanisSidebarItem(
                     id: 'logout',
+                    tooltip: const Text(
+                      'Salir de aqui',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
                     tile: ListTile(
-                      leading: Icon(Icons.logout),
-                      title: Text('Logout'),
+                      leading: const Icon(Icons.logout),
+                      title: const Text('Logout'),
+                      onTap: () {
+                        print('Logout');
+                      },
                     ),
                   )
                 ],

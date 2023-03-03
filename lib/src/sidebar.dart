@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tuanis_sidebar/src/core/ext.dart';
+import 'package:tuanis_sidebar/src/core/state.dart';
 import 'package:tuanis_sidebar/src/item.dart';
 import 'package:tuanis_sidebar/src/section.dart';
 
@@ -48,10 +49,19 @@ class TuanisSidebar extends StatefulWidget {
   /// Defines the background color of ListTile when [selected] is false.  (Applies to all items)
   final Color? tileColor;
 
+  /// The background color of the "Collapse Sidebar" item
+  final Color? collapseItemBackgroundColor;
+
+  /// If true, only icons will be shown
+  final bool isCollapse;
+
+  /// Text component for the collapse item
+  final Text? collapseSidebarItemTitle;
+
   TuanisSidebar({
     super.key,
     required this.sections,
-    this.sectionsAligment = MainAxisAlignment.spaceBetween,
+    this.sectionsAligment = MainAxisAlignment.end,
     this.selectedItemId,
     this.selectedColor,
     this.selectedTileColor,
@@ -61,6 +71,9 @@ class TuanisSidebar extends StatefulWidget {
     this.hoverColor,
     this.splashColor,
     this.tileColor,
+    this.collapseItemBackgroundColor,
+    this.isCollapse = false,
+    this.collapseSidebarItemTitle,
   }) {
     assert(_allItemIdsAreUnique());
   }
@@ -77,9 +90,14 @@ class TuanisSidebar extends StatefulWidget {
 }
 
 class _TuanisSidebar extends State<TuanisSidebar> {
-  final double _width = 250;
+  final double _expandedSidebarWidth = 250;
+  final double _collapseSidebarWidth = 50;
+  double _sidebarWidth = 0;
+  final double _collapseSidebarItemHeight = 60;
   String? _currentSelectedItemId;
   List<String> _expandedItemIds = [];
+  bool _isCollapse = false;
+  bool _futureIsCollapse = false;
 
   @override
   void initState() {
@@ -87,20 +105,74 @@ class _TuanisSidebar extends State<TuanisSidebar> {
 
     _currentSelectedItemId = widget.selectedItemId;
     _expandedItemIds = [];
+    _isCollapse = widget.isCollapse;
+    _sidebarWidth = _expandedSidebarWidth;
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        width: _width,
-        constraints: BoxConstraints(
-          minHeight: MediaQuery.of(context).size.height,
-        ),
+    return SidebarState(
+      isCollapse: _isCollapse,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        onEnd: () {
+          setState(() {
+            _isCollapse = _futureIsCollapse;
+          });
+        },
+        curve: Curves.fastOutSlowIn,
+        width: _sidebarWidth,
         child: Column(
-          mainAxisAlignment: widget.sectionsAligment,
-          children: _getSections(),
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildSections(),
+            _buildCollapseItem(),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSections() {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height - _collapseSidebarItemHeight,
+      child: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: MediaQuery.of(context).size.height - _collapseSidebarItemHeight,
+          ),
+          child: Column(
+            mainAxisAlignment: widget.sectionsAligment,
+            children: _getSections(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCollapseItem() {
+    return TuanisSidebarItem(
+      id: '',
+      tile: ListTile(
+        title: widget.collapseSidebarItemTitle ?? const Text('Collapse Sidebar'),
+        leading: _isCollapse
+            ? const Icon(Icons.keyboard_double_arrow_right)
+            : const Icon(Icons.keyboard_double_arrow_left),
+        tileColor: widget.collapseItemBackgroundColor ?? Theme.of(context).colorScheme.surface,
+        onTap: () {
+          setState(() {
+            _futureIsCollapse = !_futureIsCollapse;
+            // _isCollapse is set to false when the animation ends
+            if (!_isCollapse) {
+              _isCollapse = true;
+            }
+            if (_futureIsCollapse) {
+              _sidebarWidth = _collapseSidebarWidth;
+            } else {
+              _sidebarWidth = _expandedSidebarWidth;
+            }
+          });
+        },
       ),
     );
   }
@@ -152,7 +224,7 @@ class _TuanisSidebar extends State<TuanisSidebar> {
         defaultHoverColor: widget.hoverColor,
         defaultSplashColor: widget.splashColor,
         defaultTileColor: widget.tileColor,
-        defaultOnTap: () {
+        overrideOnTap: () {
           setState(() {
             // show the item as selected only if it is a leaf
             if (item.items.isEmpty) {

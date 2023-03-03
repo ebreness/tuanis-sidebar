@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tuanis_sidebar/src/core/state.dart';
 import 'package:tuanis_sidebar/tuanis_sidebar.dart';
 
 /// Represents a section of the sidebar containing a list of items
@@ -30,6 +31,8 @@ class TuanisSidebarSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isSidebarCollapse = SidebarState.of(context)?.isCollapse ?? false;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -43,9 +46,9 @@ class TuanisSidebarSection extends StatelessWidget {
                     top: BorderSide(color: borderColor!),
                   )
                 : null,
-            color: title != null ? backgroundColor : null,
+            color: title != null && !isSidebarCollapse ? backgroundColor : null,
           ),
-          child: title,
+          child: !isSidebarCollapse ? title : null,
         ),
         ...items,
       ],

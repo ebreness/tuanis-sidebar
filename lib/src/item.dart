@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tuanis_sidebar/src/core/ext.dart';
+import 'package:tuanis_sidebar/src/core/state.dart';
 
 /// Represents an item in the sidebar
 ///
@@ -13,6 +14,7 @@ class TuanisSidebarItem extends StatefulWidget {
   final String id;
 
   /// A ListTile component. The properties of this component will override any property from the Sidebar component
+  /// If the tile Icon is not defined, the "abc" icon will be shown in collapse view
   final ListTile tile;
 
   /// The icon to show when the item has subitems. The default value is `arrow_forward_ios`
@@ -24,6 +26,9 @@ class TuanisSidebarItem extends StatefulWidget {
   /// The sub-items
   final List<TuanisSidebarItem> items;
 
+  /// Message to display when the item is hovered
+  final Text? tooltip;
+
   const TuanisSidebarItem({
     super.key,
     required this.id,
@@ -34,6 +39,7 @@ class TuanisSidebarItem extends StatefulWidget {
     ),
     this.isSelected = false,
     this.items = const [],
+    this.tooltip,
   });
 
   @override
@@ -46,6 +52,7 @@ class TuanisSidebarItem extends StatefulWidget {
       expandIcon: expandIcon,
       isSelected: extIsSelected,
       items: items,
+      tooltip: tooltip,
     );
   }
 }
@@ -54,13 +61,38 @@ class _TuanisSidebarItem extends State<TuanisSidebarItem> {
   @override
   void initState() {
     super.initState();
+    assert(widget.tile.leading == null || widget.tile.leading is Icon);
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.tile.setDefaults(
+    final isSidebarCollapse = SidebarState.of(context)?.isCollapse ?? false;
+
+    Widget itemBody = widget.tile.setDefaults(
       defaultSelected: widget.isSelected,
       defaultTrailing: widget.items.isNotEmpty ? const Icon(Icons.arrow_forward_ios) : null,
     );
+
+    if (isSidebarCollapse) {
+      final icon = ((widget.tile.leading ?? const Icon(Icons.abc)) as Icon).setDefaults(
+        defaultColor: widget.isSelected ? widget.tile.selectedTileColor : widget.tile.iconColor,
+      );
+      itemBody = Center(
+        child: IconButton(
+          icon: icon,
+          onPressed: widget.tile.onTap,
+        ),
+      );
+
+      if (widget.tooltip != null) {
+        return Tooltip(
+          message: widget.tooltip!.data ?? '',
+          textStyle: widget.tooltip!.style,
+          child: itemBody,
+        );
+      }
+    }
+
+    return itemBody;
   }
 }

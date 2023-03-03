@@ -4,6 +4,11 @@
 
 <h2 align="center">Flutter package to create sidebars specially for web, but can be integrated as a drawer in a mobile app. Allows nested items.</h2>
 
+
+|Desktop|Mobile|
+|---|---|
+|![screenshot](/doc/assets/desktop.gif?raw=true "Desktop")|![screenshot](/doc/assets/mobile.gif?raw=true "Mobile")|
+
 ## Basic Example
 ```dart
 return Scaffold(
@@ -71,5 +76,3 @@ return Scaffold(
   ),
 );
 ```
-
-![screenshot](/doc/assets/screenshot.png?raw=true "Example Screenshot")

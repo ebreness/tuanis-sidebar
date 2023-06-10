@@ -20,8 +20,9 @@ class Example extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TuanisSidebar(
-            sectionsAligment: MainAxisAlignment.spaceBetween,
+            sectionsAlignment: MainAxisAlignment.spaceBetween,
             selectedItemId: 'settings',
+            selectedColor: Colors.blue,
             sections: [
               const TuanisSidebarSection(
                 title: Text(
@@ -51,7 +52,7 @@ class Example extends StatelessWidget {
                       title: Text('Settings'),
                       leading: Icon(Icons.settings),
                     ),
-                  )
+                  ),
                 ],
               ),
               TuanisSidebarSection(

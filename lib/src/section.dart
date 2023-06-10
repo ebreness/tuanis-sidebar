@@ -38,8 +38,8 @@ class TuanisSidebarSection extends StatelessWidget {
       children: [
         Container(
           width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          margin: const EdgeInsets.only(top: 16),
+          // padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          // margin: const EdgeInsets.only(top: 16),
           decoration: BoxDecoration(
             border: borderColor != null
                 ? Border(
@@ -48,7 +48,10 @@ class TuanisSidebarSection extends StatelessWidget {
                 : null,
             color: title != null && !isSidebarCollapse ? backgroundColor : null,
           ),
-          child: !isSidebarCollapse ? title : null,
+          child: !isSidebarCollapse ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: title,
+          ) : null,
         ),
         ...items,
       ],

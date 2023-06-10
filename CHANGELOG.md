@@ -13,3 +13,16 @@
 
 ## 0.2.0
 - items can be divided in sections
+
+## 0.3.0
+- collapse/expand animation
+
+## 0.3.1
+- selectedColor is now required. This fixes https://github.com/ebreness/tuanis_sidebar/issues/1
+- some typos were fixed
+
+## 0.3.2
+- removed padding around sections
+
+## 0.3.3
+- removed margin around sections

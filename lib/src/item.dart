@@ -45,7 +45,8 @@ class TuanisSidebarItem extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _TuanisSidebarItem();
 
-  TuanisSidebarItem copyWith({required ListTile extTile, required bool extIsSelected}) {
+  TuanisSidebarItem copyWith(
+      {required ListTile extTile, required bool extIsSelected}) {
     return TuanisSidebarItem(
       id: id,
       tile: extTile,
@@ -81,8 +82,11 @@ class _TuanisSidebarItem extends State<TuanisSidebarItem> {
     );
 
     if (isSidebarCollapse) {
-      final icon = ((widget.tile.leading ?? const Icon(Icons.abc)) as Icon).setDefaults(
-        defaultColor: widget.isSelected ? widget.tile.selectedTileColor : widget.tile.iconColor,
+      final icon =
+          ((widget.tile.leading ?? const Icon(Icons.abc)) as Icon).setDefaults(
+        defaultColor: widget.isSelected
+            ? widget.tile.selectedColor
+            : widget.tile.iconColor,
       );
       itemBody = Center(
         child: IconButton(

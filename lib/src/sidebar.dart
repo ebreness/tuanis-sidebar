@@ -20,7 +20,7 @@ class TuanisSidebar extends StatefulWidget {
   final List<TuanisSidebarSection> sections;
 
   ///  Control how the sections are spread within the Column
-  final MainAxisAlignment sectionsAligment;
+  final MainAxisAlignment sectionsAlignment;
 
   /// The background color of the sidebar
   final Color? backgroundColor;
@@ -29,7 +29,7 @@ class TuanisSidebar extends StatefulWidget {
   final String? selectedItemId;
 
   /// Defines the color used for icons and text when the list tile is selected. (Applies to all items)
-  final Color? selectedColor;
+  final Color selectedColor;
 
   /// Defines the background color of ListTile when [selected] is true. (Applies to all items)
   final Color? selectedTileColor;
@@ -64,10 +64,10 @@ class TuanisSidebar extends StatefulWidget {
   TuanisSidebar({
     super.key,
     required this.sections,
-    this.sectionsAligment = MainAxisAlignment.end,
+    this.sectionsAlignment = MainAxisAlignment.end,
     this.selectedItemId,
     this.backgroundColor,
-    this.selectedColor,
+    required this.selectedColor,
     this.selectedTileColor,
     this.iconColor,
     this.textColor,
@@ -110,31 +110,33 @@ class _TuanisSidebar extends State<TuanisSidebar> {
     _currentSelectedItemId = widget.selectedItemId;
     _expandedItemIds = [];
     _isCollapse = widget.isCollapse;
-    _sidebarWidth = _expandedSidebarWidth;
+    _sidebarWidth = widget.isCollapse ? _collapseSidebarWidth : _expandedSidebarWidth;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return SidebarState(
       isCollapse: _isCollapse,
-      child: SafeArea(
-        child: AnimatedContainer(
-          color: widget.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
-          duration: const Duration(milliseconds: 300),
-          onEnd: () {
-            setState(() {
-              _isCollapse = _futureIsCollapse;
-            });
-          },
-          curve: Curves.fastOutSlowIn,
-          width: _sidebarWidth,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildSections(),
-              _buildCollapseItem(),
-            ],
-          ),
+      child: AnimatedContainer(
+        color: widget.backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
+        duration: const Duration(milliseconds: 300),
+        onEnd: () {
+          setState(() {
+            _isCollapse = _futureIsCollapse;
+          });
+        },
+        curve: Curves.fastOutSlowIn,
+        width: _sidebarWidth,
+        child: Column(
+          children: [
+            Expanded(child: _buildSections()),
+            _buildCollapseItem(),
+          ],
         ),
       ),
     );
@@ -155,7 +157,7 @@ class _TuanisSidebar extends State<TuanisSidebar> {
                 -MediaQuery.of(context).padding.bottom,
           ),
           child: Column(
-            mainAxisAlignment: widget.sectionsAligment,
+            mainAxisAlignment: widget.sectionsAlignment,
             children: _getSections(),
           ),
         ),

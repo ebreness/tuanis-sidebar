@@ -1,6 +1,6 @@
 name: tuanis_sidebar
 description: Easily create sidebars specially for web, but can be integrated as a drawer in a mobile app. Allows nested items and divide items by sections.
-version: 0.2.0
+version: 0.3.3
 homepage: https://github.com/ebreness/tuanis_sidebar
 
 environment:
